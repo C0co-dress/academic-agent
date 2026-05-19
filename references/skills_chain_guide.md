@@ -141,7 +141,9 @@
 | `matplotlib` | 全定制 Python 绑图 | 需要极致控制或特殊图表 |
 | `seaborn` | 统计绑图：热力图、箱线图、小提琴图 | 快速探索阶段 |
 | `scientific-visualization` | 多面板期刊图：显著性标注、色盲友好 | 投稿前最终排版 |
+| `academic-plotting` | ML论文图表自动生成：自动选类型+matplotlib/seaborn | ML会议论文图表 |
 | `nature-figure` | Nature/顶会级图表：先定声明→再出图 | 高影响因子期刊核心图 |
+| `canvas-design` | 概念图/设计图：设计哲学.md→单页PNG/PDF | 论文概念图、示意图 |
 
 ### 架构图与示意图
 
@@ -183,13 +185,19 @@ exploratory-data-analysis (数据初探)
 |------|-------|------|------|
 | 全流程写作 | `academic-paper` | `full` | 12-agent 完整流水线 |
 | 苏格拉底规划 | `academic-paper` | `plan` | 逐章引导规划 |
+| ML 顶会论文 | `ml-paper-writing` | 默认 | NeurIPS/ICML/ICLR/ACL/AAAI/COLM 专用模板+booktabs+checklist |
+| 系统顶会论文 | `systems-paper-writing` | 默认 | OSDI/SOSP/ASPLOS/NSDI/EuroSys 专用模板 |
 | Nature 风格写作 | `nature-writing` | 按章节 | 从声明+证据出发的结构化写作 |
 | 仅大纲 | `academic-paper` | `outline-only` | 详细大纲+证据映射 |
+| 协作式写作 | `doc-coauthoring` | 三阶段 | 收集上下文→分节起草→读者测试 |
 
 **选择逻辑**:
-- 有完整研究结果 → `academic-paper full` (一键全流程)
+- 有完整研究结果，ML会议 → `ml-paper-writing`（含LaTeX模板+会议checklist）
+- 有完整研究结果，系统会议 → `systems-paper-writing`（含段落级蓝图）
+- 有完整研究结果，其他 → `academic-paper full` (一键全流程)
 - 只有结果但不确定如何组织 → `nature-writing` (先写脚手架) → `academic-paper full`
 - 只有模糊想法 → `academic-paper plan` (逐章引导)
+- 需要交互式协作迭代 → `doc-coauthoring` (三阶段结构化协作)
 - 目标 Nature/Science/Cell → `nature-writing` + `nature-polishing`
 
 ### 7b. 图表制作
@@ -198,12 +206,15 @@ exploratory-data-analysis (数据初探)
 |------|-------|------|------|
 | 数据初探 | `exploratory-data-analysis` | 自动 | 格式检测、质量指标、分布特征 |
 | 探索绑图 | `seaborn` / `matplotlib` | 标准 | 热力图、箱线图、小提琴图、散点图 |
+| ML论文自动绑图 | `academic-plotting` | 默认 | 自动选类型+matplotlib/seaborn生成 |
 | 出版级图表 | `nature-figure` | Python/R | 先确定声明→证据链→再出图 |
 | 多面板期刊图 | `scientific-visualization` | 多面板 | 显著性标注、色盲友好、期刊格式化 |
 | 方法架构图 | `figure_generation_prompts §1` | — | 框架图、流程图、示意图 |
+| 概念设计图 | `canvas-design` | 默认 | 设计哲学.md→单页PNG/PDF |
 | 图表类型推荐 | `figure_generation_prompts §2` | — | 19 种标准学术图表库中推荐 |
 | 图/表标题 | `figure_generation_prompts §3-4` | — | 中文描述→英文标题 |
 | 论文配套PPT | `nature-paper2ppt` | 默认 | 中文 PPT 用于组会/答辩 |
+| 会议演讲PPT | `presenting-conference-talks` | 默认 | Beamer PDF + PPTX + 演讲脚本 |
 
 **推荐路径**: `exploratory-data-analysis` (初探) → `seaborn`/`matplotlib` (探索) → `nature-figure` (核心图表) → `scientific-visualization` (排版) → `figure_generation_prompts §3-4` (标题)
 
@@ -222,8 +233,9 @@ exploratory-data-analysis (数据初探)
 |------|-------|------|------|
 | 英文顶会润色 | `nature-polishing` / `polishing §2` | 英→英 | 句子级精修、顶会措辞 |
 | 中文论文润色 | `polishing §1` | 中→中 | 口语化→正式学术中文 |
-| 去AI味（英文） | `polishing §3` | 英→英 | 消除AI写作痕迹 |
+| 去AI味（英文） | `polishing §3` / `humanizer` | 英→英 | 消除AI写作痕迹 |
 | 去AI味（中文） | `polishing §4` | 中→中 | 消除翻译腔和机器味 |
+| 系统化去AI味 | `humanizer` | 默认 | Wikipedia 9维AI写作特征检测+修复 |
 | 逻辑检查 | `polishing §5` | — | 终稿前一致性红线审查 |
 | 翻译（中→英） | `polishing §7` | 中→英 | LaTeX/Word 学术翻译 |
 | 缩写/扩写 | `polishing §6` | 英→英 | 微幅调整篇幅 |
@@ -340,3 +352,10 @@ Stage 7-9: 论文撰写→审稿→定稿
 | 目标 Nature/Science/Cell | `nature-writing` → 按 Stage 7 最终路径 | Stage 7 |
 | 中文论文投稿（国内期刊） | `academic-paper full` (zh-CN body) | Stage 7 |
 | 中文学术PPT | `nature-paper2ppt` (简体中文输出) | — |
+| ML顶会投稿 (NeurIPS/ICML) | `ml-paper-writing` | Stage 7a |
+| 系统顶会投稿 (OSDI/ASPLOS) | `systems-paper-writing` | Stage 7a |
+| 会议演讲 (Beamer/PPTX) | `presenting-conference-talks` | Stage 7b |
+| 论文概念图/示意图 | `canvas-design` | Stage 6.5 |
+| ML论文图表自动生成 | `academic-plotting` | Stage 7b |
+| 系统化去AI味 | `humanizer` | Stage 7d |
+| 交互式协作写文档 | `doc-coauthoring` | Stage 7a |

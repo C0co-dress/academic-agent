@@ -1,10 +1,12 @@
 ---
 name: academic-agent
 description: >-
-  Self-contained academic paper writing agent consolidating 13+ skills
+  Self-contained academic paper writing agent consolidating 20+ skills
   (academic-paper, deep-research, academic-paper-reviewer, academic-pipeline,
   nature-writing, nature-polishing, nature-figure, nature-reader, nature-citation,
-  nature-response, nature-data, nature-paper2ppt, nature-academic-search)
+  nature-response, nature-data, nature-paper2ppt, nature-academic-search,
+  ml-paper-writing, systems-paper-writing, humanizer, academic-plotting,
+  presenting-conference-talks, doc-coauthoring, canvas-design)
   plus prompt libraries for Chinese/English polishing, de-AI-ification,
   logic checking, figure/chart generation, and experiment analysis.
   Full lifecycle: literature survey → topic selection → deep reading →
@@ -29,6 +31,13 @@ metadata:
     - nature-data
     - nature-paper2ppt
     - nature-academic-search
+    - ml-paper-writing (from zechenzhangAGI/AI-research-SKILLs)
+    - systems-paper-writing (from zechenzhangAGI/AI-research-SKILLs)
+    - academic-plotting (from zechenzhangAGI/AI-research-SKILLs)
+    - presenting-conference-talks (from zechenzhangAGI/AI-research-SKILLs)
+    - humanizer v1.0 (from blader/humanizer)
+    - doc-coauthoring (from anthropics/skills)
+    - canvas-design (from anthropics/skills)
     - polishing_prompts_library
     - figure_generation_prompts
   data_access_level: verified_only
@@ -103,14 +112,17 @@ metadata:
 write paper, academic paper, research paper, paper outline, revise paper, literature review,
 systematic review, meta-analysis, guide my research, polish my paper, de-AI, humanize,
 reviewer response, peer review, manuscript review, paper figure, scientific figure,
-data availability, paper presentation, paper PPT, format paper, convert citations,
-translate paper, check logic, proofread paper, academic writing
+data availability, paper presentation, paper PPT, Beamer slides, conference talk,
+format paper, convert citations, translate paper, check logic, proofread paper,
+academic writing, ML paper, NeurIPS paper, ICML paper, systems paper, OSDI paper,
+coauthor, co-author, concept diagram, architecture diagram
 
 **简体中文 triggers**:
 写论文, 学术论文, 论文大纲, 写摘要, 修改论文, 文献回顾, 文献综述, 系统综述, 荟萃分析,
 引导我写论文, 帮我规划论文, 润色论文, 去AI味, 审稿意见, 同行评审, 论文图表, 科学绘图,
-数据可视化, 论文PPT, 组会汇报, 格式转换, 翻译论文, 逻辑检查, 论文校对, 学术写作,
-研究方向, 选题, 实验设计, 数据分析, 回复审稿, AI声明, 引用格式
+数据可视化, 论文PPT, 组会汇报, Beamer幻灯片, 会议演讲, 格式转换, 翻译论文, 逻辑检查,
+论文校对, 学术写作, 研究方向, 选题, 实验设计, 数据分析, 回复审稿, AI声明, 引用格式,
+ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 
 **繁體中文 triggers**:
 寫論文, 學術論文, 論文大綱, 寫摘要, 修改論文, 文獻回顧, 文獻綜述, 系統性回顧, 後設分析,
@@ -147,6 +159,12 @@ translate paper, check logic, proofread paper, academic writing
 | "引用"（Nature系列） | `nature-citation` | 需要CNS引用 |
 | "数据声明" | `nature-data` | Nature投稿前 |
 | "做PPT" / "组会汇报" | `nature-paper2ppt` | 需要论文PPT |
+| "做Beamer/会议演讲PPT" | `presenting-conference-talks` | 需要学术演讲slides |
+| "去AI味"（系统化） | `humanizer` | Wikipedia Signs of AI writing 框架 |
+| "ML论文"（NeurIPS/ICML/ICLR） | `ml-paper-writing` | ML会议专用模板+格式 |
+| "系统论文"（OSDI/SOSP/ASPLOS） | `systems-paper-writing` | 系统会议专用模板 |
+| "论文架构图/概念图" | `canvas-design` / `academic-plotting` | 设计哲学→PNG/PDF |
+| "协作写文档" | `doc-coauthoring` | 三阶段结构化协作 |
 | "格式转换" / "转LaTeX" | `academic-paper format-convert` | 需要改格式 |
 | "AI声明" | `academic-paper disclosure` | 投稿前需要AI使用声明 |
 | "全程"（从调研到定稿） | `academic-pipeline` | 需要编排多阶段 |
@@ -189,12 +207,15 @@ translate paper, check logic, proofread paper, academic writing
 ### 阶段 3: 论文撰写
 ```
 用户: "帮我写论文"
-→ 判断目标期刊级别:
+→ 判断目标期刊/会议级别:
   → Nature/CNS: nature-writing (框架) → nature-figure (图表) → academic-paper full → nature-polishing → nature-data
-  → 顶会(CS): academic-paper full → polishing_prompts §2 (润色) + §5 (逻辑检查)
+  → ML顶会 (NeurIPS/ICML/ICLR): ml-paper-writing (LaTeX模板+booktabs+checklist)
+  → 系统顶会 (OSDI/SOSP/ASPLOS): systems-paper-writing (系统论文专用模板)
+  → 顶会(CS通用): academic-paper full → polishing_prompts §2 (润色) + §5 (逻辑检查)
   → 中文期刊: academic-paper full (zh-CN) → polishing_prompts §1 (中文润色) + §4 (去AI味)
 
 → 写完后:
+  → 去AI味系统化检查: humanizer (Wikipedia Signs of AI writing 框架)
   → 模拟审稿: academic-paper-reviewer full
   → 引用检查: academic-paper citation-check
   → AI声明: academic-paper disclosure
@@ -205,8 +226,9 @@ translate paper, check logic, proofread paper, academic writing
 用户: "帮我做论文的图表"
 → 数据探索: exploratory-data-analysis
 → 探索绑图: seaborn / matplotlib
-→ 正式图表: nature-figure / scientific-visualization
-→ 架构图: figure_generation_prompts §1
+→ 正式数据图: nature-figure / scientific-visualization
+→ ML论文图表: academic-plotting (自动选图表类型+生成)
+→ 架构图/概念图: canvas-design (设计哲学→PNG/PDF) / figure_generation_prompts §1
 → 图表推荐: figure_generation_prompts §2
 → 标题: figure_generation_prompts §3-4
 ```
@@ -226,7 +248,8 @@ translate paper, check logic, proofread paper, academic writing
 → 格式转换: academic-paper format-convert (LaTeX/DOCX/PDF)
 → 引用格式互转: academic-paper format-convert (APA/Chicago/MLA/IEEE/Vancouver)
 → AI披露: academic-paper disclosure
-→ PPT: nature-paper2ppt
+→ 普通PPT: nature-paper2ppt
+→ 会议演讲PPT: presenting-conference-talks (Beamer PDF + 可编辑PPTX + 演讲脚本)
 ```
 
 ---
@@ -259,15 +282,19 @@ translate paper, check logic, proofread paper, academic writing
 |------|------|----------|
 | 全流程写作 | `academic-paper full` | 研究结果→完整论文 |
 | 逐章引导 | `academic-paper plan` | 模糊想法→逐章规划 |
+| ML顶会论文 | `ml-paper-writing` | repo/结果→NeurIPS/ICML/ICLR 论文 |
+| 系统顶会论文 | `systems-paper-writing` | repo/结果→OSDI/SOSP/ASPLOS 论文 |
 | Nature风格 | `nature-writing` | 声明+证据→段落草稿 |
 | 英文精修 | `nature-polishing` / `§2` | 英文草稿→顶会英文 |
 | 中文精修 | `§1 中文表达润色` | 中文草稿→正式学术中文 |
-| 去AI味(EN) | `§3 去AI味-EN` | AI文本→自然人写文本 |
+| 去AI味(EN) | `§3 去AI味-EN` / `humanizer` | AI文本→自然人写文本 |
 | 去AI味(CN) | `§4 去AI味-CN` | AI中文→自然学术中文 |
+| 系统化去AI味 | `humanizer` | Wikipedia Signs of AI writing 9维检测 |
 | 逻辑检查 | `§5 逻辑检查` | 终稿→一致性报告 |
 | 翻译(中→英) | `§7 翻译` | 中文草稿→英文论文 |
 | 缩写 | `§6 缩写` | 长文本→压缩版 |
 | 扩写 | `§6 扩写` | 短文→充实版 |
+| 协作写文档 | `doc-coauthoring` | 三阶段：收集上下文→起草→读者测试 |
 
 > `§N` = `academic-agent/references/polishing_prompts_library.md` 对应章节
 
@@ -277,13 +304,16 @@ translate paper, check logic, proofread paper, academic writing
 |------|------|------|
 | 数据初探 | `exploratory-data-analysis` | 自动检测格式+质量+分布 |
 | 快速绑图 | `seaborn` / `matplotlib` | 探索阶段 |
+| ML论文图表 | `academic-plotting` | 自动选图表类型+matplotlib/seaborn生成 |
 | 出版级数据图 | `nature-figure` | 先定声明→再出图 |
 | 多面板期刊图 | `scientific-visualization` | 显著性标注+色盲友好 |
 | 方法架构图 | `§1 论文架构图` | 框架/流程示意图 |
+| 概念图/设计图 | `canvas-design` | 设计哲学.md→PNG/PDF |
 | 图表推荐 | `§2 绘图推荐` | 根据数据推荐最佳图表 |
 | 图/表标题 | `§3-4` | 中文描述→英文标题 |
 | 实验分析 | `§5 实验分析` | 数据→LaTeX分析段落 |
 | 论文PPT | `nature-paper2ppt` | PDF→中文组会PPT |
+| 会议演讲 | `presenting-conference-talks` | 论文→Beamer PDF+PPTX+演讲脚本 |
 
 > `§N` = `academic-agent/references/figure_generation_prompts.md` 对应章节
 
