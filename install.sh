@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 # Academic Agent — 一键安装脚本
 # 将 skills/ 目录中的 13 个 skills 符号链接到 ~/.claude/skills/
+#
+# 用法:
+#   bash install.sh          # 交互式安装
+#   bash install.sh --force  # 非交互式，强制覆盖已有链接
 
 set -euo pipefail
+
+FORCE=false
+if [[ "${1:-}" == "--force" ]]; then
+    FORCE=true
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_DIR="$SCRIPT_DIR/skills"
@@ -67,9 +76,7 @@ for skill in "${SKILLS[@]}"; do
             continue
         else
             warn "符号链接已存在但指向不同位置: $dst -> $current_target"
-            read -p "是否覆盖? [y/N] " -n 1 -r
-            echo
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
+            if $FORCE || { read -p "是否覆盖? [y/N] " -n 1 -r; echo; [[ $REPLY =~ ^[Yy]$ ]]; }; then
                 ln -sfn "$src" "$dst"
                 info "已更新: $skill"
                 ((installed++))
@@ -81,9 +88,7 @@ for skill in "${SKILLS[@]}"; do
     elif [ -d "$dst" ]; then
         # 目录已存在（不是符号链接）
         warn "目录已存在（非符号链接）: $dst"
-        read -p "是否覆盖? [y/N] " -n 1 -r
-        echo
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
+        if $FORCE || { read -p "是否覆盖? [y/N] " -n 1 -r; echo; [[ $REPLY =~ ^[Yy]$ ]]; }; then
             rm -rf "$dst"
             ln -s "$src" "$dst"
             info "已安装: $skill"
