@@ -1,12 +1,10 @@
 ---
 name: academic-agent
 description: >-
-  Self-contained academic paper writing agent consolidating 20+ skills
-  (academic-paper, deep-research, academic-paper-reviewer, academic-pipeline,
+  Self-contained academic paper writing mega-agent. Orchestrates 13 professional
+  skills (academic-paper, deep-research, academic-paper-reviewer, academic-pipeline,
   nature-writing, nature-polishing, nature-figure, nature-reader, nature-citation,
-  nature-response, nature-data, nature-paper2ppt, nature-academic-search,
-  ml-paper-writing, systems-paper-writing, humanizer, academic-plotting,
-  presenting-conference-talks, doc-coauthoring, canvas-design)
+  nature-response, nature-data, nature-paper2ppt, nature-academic-search)
   plus prompt libraries for Chinese/English polishing, de-AI-ification,
   logic checking, figure/chart generation, and experiment analysis.
   Full lifecycle: literature survey → topic selection → deep reading →
@@ -15,14 +13,14 @@ description: >-
   final submission. Supports zh-CN/zh-TW/EN. Triggers on any academic
   writing or research request in Chinese or English.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   last_updated: "2026-05-19"
   based_on:
-    - academic-paper v3.1.1
+    - academic-paper v3.1.2
     - deep-research v2.9.3
     - academic-paper-reviewer v1.9.0
     - academic-pipeline v3.7.0
-    - nature-writing
+    - nature-writing v0.2.0
     - nature-polishing
     - nature-figure
     - nature-reader
@@ -31,6 +29,9 @@ metadata:
     - nature-data
     - nature-paper2ppt
     - nature-academic-search
+    - polishing_prompts_library
+    - figure_generation_prompts
+  optional_skills:
     - ml-paper-writing (from zechenzhangAGI/AI-research-SKILLs)
     - systems-paper-writing (from zechenzhangAGI/AI-research-SKILLs)
     - academic-plotting (from zechenzhangAGI/AI-research-SKILLs)
@@ -38,8 +39,6 @@ metadata:
     - humanizer v1.0 (from blader/humanizer)
     - doc-coauthoring (from anthropics/skills)
     - canvas-design (from anthropics/skills)
-    - polishing_prompts_library
-    - figure_generation_prompts
   data_access_level: verified_only
   task_type: open-ended
 ---
@@ -47,6 +46,8 @@ metadata:
 # Academic Agent — 学术论文写作全流程助手
 
 一站式学术写作 Agent，整合 13 个专业 skills + 2 个提示词库到一个自包含的智能体中。用户无需了解底层 skill 架构，只需描述需求即可自动路由到正确的工作流。
+
+> **可选 Skills**：另有 7 个可选 skills（ml-paper-writing, systems-paper-writing, academic-plotting, presenting-conference-talks, humanizer, doc-coauthoring, canvas-design）未包含在默认安装中。详见下方「可选 Skills 安装」章节。
 
 ## 设计原则
 
@@ -159,12 +160,12 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 | "引用"（Nature系列） | `nature-citation` | 需要CNS引用 |
 | "数据声明" | `nature-data` | Nature投稿前 |
 | "做PPT" / "组会汇报" | `nature-paper2ppt` | 需要论文PPT |
-| "做Beamer/会议演讲PPT" | `presenting-conference-talks` | 需要学术演讲slides |
-| "去AI味"（系统化） | `humanizer` | Wikipedia Signs of AI writing 框架 |
-| "ML论文"（NeurIPS/ICML/ICLR） | `ml-paper-writing` | ML会议专用模板+格式 |
-| "系统论文"（OSDI/SOSP/ASPLOS） | `systems-paper-writing` | 系统会议专用模板 |
-| "论文架构图/概念图" | `canvas-design` / `academic-plotting` | 设计哲学→PNG/PDF |
-| "协作写文档" | `doc-coauthoring` | 三阶段结构化协作 |
+| "做Beamer/会议演讲PPT" | `presenting-conference-talks` ⚠️可选 | 需要学术演讲slides |
+| "去AI味"（系统化） | `humanizer` ⚠️可选 | Wikipedia Signs of AI writing 框架 |
+| "ML论文"（NeurIPS/ICML/ICLR） | `ml-paper-writing` ⚠️可选 | ML会议专用模板+格式 |
+| "系统论文"（OSDI/SOSP/ASPLOS） | `systems-paper-writing` ⚠️可选 | 系统会议专用模板 |
+| "论文架构图/概念图" | `canvas-design` / `academic-plotting` ⚠️可选 | 设计哲学→PNG/PDF |
+| "协作写文档" | `doc-coauthoring` ⚠️可选 | 三阶段结构化协作 |
 | "格式转换" / "转LaTeX" | `academic-paper format-convert` | 需要改格式 |
 | "AI声明" | `academic-paper disclosure` | 投稿前需要AI使用声明 |
 | "全程"（从调研到定稿） | `academic-pipeline` | 需要编排多阶段 |
@@ -249,7 +250,7 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 → 引用格式互转: academic-paper format-convert (APA/Chicago/MLA/IEEE/Vancouver)
 → AI披露: academic-paper disclosure
 → 普通PPT: nature-paper2ppt
-→ 会议演讲PPT: presenting-conference-talks (Beamer PDF + 可编辑PPTX + 演讲脚本)
+→ 会议演讲PPT: presenting-conference-talks ⚠️可选 (Beamer PDF + 可编辑PPTX + 演讲脚本)
 ```
 
 ---
@@ -282,19 +283,19 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 |------|------|----------|
 | 全流程写作 | `academic-paper full` | 研究结果→完整论文 |
 | 逐章引导 | `academic-paper plan` | 模糊想法→逐章规划 |
-| ML顶会论文 | `ml-paper-writing` | repo/结果→NeurIPS/ICML/ICLR 论文 |
-| 系统顶会论文 | `systems-paper-writing` | repo/结果→OSDI/SOSP/ASPLOS 论文 |
+| ML顶会论文 | `ml-paper-writing` ⚠️可选 | repo/结果→NeurIPS/ICML/ICLR 论文 |
+| 系统顶会论文 | `systems-paper-writing` ⚠️可选 | repo/结果→OSDI/SOSP/ASPLOS 论文 |
 | Nature风格 | `nature-writing` | 声明+证据→段落草稿 |
 | 英文精修 | `nature-polishing` / `§2` | 英文草稿→顶会英文 |
 | 中文精修 | `§1 中文表达润色` | 中文草稿→正式学术中文 |
-| 去AI味(EN) | `§3 去AI味-EN` / `humanizer` | AI文本→自然人写文本 |
+| 去AI味(EN) | `§3 去AI味-EN` / `humanizer` ⚠️可选 | AI文本→自然人写文本 |
 | 去AI味(CN) | `§4 去AI味-CN` | AI中文→自然学术中文 |
-| 系统化去AI味 | `humanizer` | Wikipedia Signs of AI writing 9维检测 |
+| 系统化去AI味 | `humanizer` ⚠️可选 | Wikipedia Signs of AI writing 9维检测 |
 | 逻辑检查 | `§5 逻辑检查` | 终稿→一致性报告 |
 | 翻译(中→英) | `§7 翻译` | 中文草稿→英文论文 |
 | 缩写 | `§6 缩写` | 长文本→压缩版 |
 | 扩写 | `§6 扩写` | 短文→充实版 |
-| 协作写文档 | `doc-coauthoring` | 三阶段：收集上下文→起草→读者测试 |
+| 协作写文档 | `doc-coauthoring` ⚠️可选 | 三阶段：收集上下文→起草→读者测试 |
 
 > `§N` = `academic-agent/references/polishing_prompts_library.md` 对应章节
 
@@ -304,16 +305,16 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 |------|------|------|
 | 数据初探 | `exploratory-data-analysis` | 自动检测格式+质量+分布 |
 | 快速绑图 | `seaborn` / `matplotlib` | 探索阶段 |
-| ML论文图表 | `academic-plotting` | 自动选图表类型+matplotlib/seaborn生成 |
+| ML论文图表 | `academic-plotting` ⚠️可选 | 自动选图表类型+matplotlib/seaborn生成 |
 | 出版级数据图 | `nature-figure` | 先定声明→再出图 |
 | 多面板期刊图 | `scientific-visualization` | 显著性标注+色盲友好 |
 | 方法架构图 | `§1 论文架构图` | 框架/流程示意图 |
-| 概念图/设计图 | `canvas-design` | 设计哲学.md→PNG/PDF |
+| 概念图/设计图 | `canvas-design` ⚠️可选 | 设计哲学.md→PNG/PDF |
 | 图表推荐 | `§2 绘图推荐` | 根据数据推荐最佳图表 |
 | 图/表标题 | `§3-4` | 中文描述→英文标题 |
 | 实验分析 | `§5 实验分析` | 数据→LaTeX分析段落 |
 | 论文PPT | `nature-paper2ppt` | PDF→中文组会PPT |
-| 会议演讲 | `presenting-conference-talks` | 论文→Beamer PDF+PPTX+演讲脚本 |
+| 会议演讲 | `presenting-conference-talks` ⚠️可选 | 论文→Beamer PDF+PPTX+演讲脚本 |
 
 > `§N` = `academic-agent/references/figure_generation_prompts.md` 对应章节
 
@@ -360,17 +361,55 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 
 | 项目 | 内容 |
 |------|------|
-| Agent 版本 | 1.0.0 |
+| Agent 版本 | 1.1.0 |
 | 创建日期 | 2026-05-19 |
-| 整合 Skills | 13 个核心 skills + 2 个提示词库 |
+| 整合 Skills | 13 个核心 skills + 2 个提示词库（另有 7 个可选） |
 | 支持语言 | zh-CN / zh-TW / EN |
 | 适用范围 | 全学科、全期刊/会议级别 |
 
 ---
 
+## 可选 Skills 安装
+
+以下 skills 未包含在默认安装中，可根据需要手动安装：
+
+### zechenzhangAGI/AI-research-SKILLs
+
+提供 ML 论文、系统论文、学术绘图、会议演讲等专用 skills。
+
+```bash
+git clone https://github.com/zechenzhangAGI/AI-research-SKILLs.git /tmp/AI-research-SKILLs
+ln -s /tmp/AI-research-SKILLs/ml-paper-writing ~/.claude/skills/
+ln -s /tmp/AI-research-SKILLs/systems-paper-writing ~/.claude/skills/
+ln -s /tmp/AI-research-SKILLs/academic-plotting ~/.claude/skills/
+ln -s /tmp/AI-research-SKILLs/presenting-conference-talks ~/.claude/skills/
+```
+
+### blader/humanizer
+
+基于 Wikipedia "Signs of AI writing" 框架的系统化去 AI 味工具。
+
+```bash
+git clone https://github.com/blader/humanizer.git ~/.claude/skills/humanizer
+```
+
+### anthropics/skills
+
+Anthropic 官方 skills 库。
+
+```bash
+git clone https://github.com/anthropics/skills.git /tmp/anthropic-skills
+ln -s /tmp/anthropics-skills/doc-coauthoring ~/.claude/skills/
+ln -s /tmp/anthropics-skills/canvas-design ~/.claude/skills/
+```
+
+安装后，AGENT.md 中的路由表会自动识别这些 skills。
+
+---
+
 ## 参考文件索引
 
-本 Agent 所有自定义文件均位于 `academic-agent/` 目录（本地独立，不受任何 git 仓库更新影响）：
+本 Agent 所有文件均位于 `academic-agent/` 目录（自包含，克隆即用）：
 
 | 文件 | 内容 |
 |------|------|
@@ -379,10 +418,15 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 | `references/figure_generation_prompts.md` | 架构图/图表推荐/标题生成提示词库 |
 | `UPDATE_POLICY.md` | 更新安全策略与操作指南 |
 
-上游 skill 文件（引用路径不变）：
+下游 skill 文件（已包含在 `skills/` 目录中）：
 | 文件 | 内容 |
 |------|------|
-| `academic-paper/references/writing_quality_check.md` | 写作质量检查（含中英文反模式 §F） |
+| `skills/academic-paper/references/writing_quality_check.md` | 写作质量检查（含中英文反模式 §F） |
+| `skills/academic-paper/SKILL.md` | 论文写作 skill |
+| `skills/deep-research/SKILL.md` | 深度研究 skill |
+| `skills/academic-paper-reviewer/SKILL.md` | 模拟审稿 skill |
+| `skills/academic-pipeline/SKILL.md` | 全流程编排 skill |
+| `skills/nature-*/SKILL.md` | Nature 系列 skills |
 
 ---
 

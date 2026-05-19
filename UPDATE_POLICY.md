@@ -3,103 +3,133 @@
 ## 架构说明
 
 ```
-.claude/skills/
-├── academic-agent/              ← 本地独立目录（本目录），不归任何 git 仓库管理
-│   ├── AGENT.md                 ← 独立 Agent 入口
-│   ├── UPDATE_POLICY.md         ← 本文件
-│   └── references/              ← 所有本地自定义文件
-│       ├── skills_chain_guide.md
-│       ├── polishing_prompts_library.md
-│       └── figure_generation_prompts.md
-│
-├── academic-paper/              ← academic-research-skills 克隆（不再更新）
-├── deep-research/               ← academic-research-skills 克隆（不再更新）
-├── academic-paper-reviewer/     ← academic-research-skills 克隆（不再更新）
-├── academic-pipeline/           ← academic-research-skills 克隆（不再更新）
-│
-├── nature-writing/              ← 可能接收上游更新
-├── nature-polishing/            ← 可能接收上游更新
-├── nature-figure/               ← 可能接收上游更新
-├── nature-reader/               ← 可能接收上游更新
-├── nature-citation/             ← 可能接收上游更新
-├── nature-response/             ← 可能接收上游更新
-├── nature-data/                 ← 可能接收上游更新
-├── nature-paper2ppt/            ← 可能接收上游更新
-└── nature-academic-search/      ← 可能接收上游更新
+academic-agent/                    ← 自包含仓库（克隆即用）
+├── AGENT.md                       ← Agent 主定义
+├── SKILL.md                       ← Skill 定义
+├── README.md                      ← 安装与使用指南
+├── install.sh                     ← 一键安装脚本
+├── UPDATE_POLICY.md               ← 本文件
+├── references/                    ← 提示词库
+│   ├── skills_chain_guide.md
+│   ├── polishing_prompts_library.md
+│   └── figure_generation_prompts.md
+└── skills/                        ← 13 个下游 skills（自包含）
+    ├── academic-paper/
+    ├── academic-paper-reviewer/
+    ├── academic-pipeline/
+    ├── deep-research/
+    ├── nature-academic-search/
+    ├── nature-citation/
+    ├── nature-data/
+    ├── nature-figure/
+    ├── nature-paper2ppt/
+    ├── nature-polishing/
+    ├── nature-reader/
+    ├── nature-response/
+    ├── nature-writing/
+    └── shared/
+
+安装后（通过 install.sh）：
+~/.claude/skills/
+├── academic-agent/                ← 本仓库（符号链接或复制）
+├── academic-paper/                ← 符号链接 → academic-agent/skills/academic-paper
+├── deep-research/                 ← 符号链接 → academic-agent/skills/deep-research
+├── academic-paper-reviewer/       ← 符号链接 → academic-agent/skills/academic-paper-reviewer
+├── academic-pipeline/             ← 符号链接 → academic-agent/skills/academic-pipeline
+├── nature-writing/                ← 符号链接 → academic-agent/skills/nature-writing
+├── nature-polishing/              ← 符号链接 → academic-agent/skills/nature-polishing
+├── nature-figure/                 ← 符号链接 → academic-agent/skills/nature-figure
+├── nature-reader/                 ← 符号链接 → academic-agent/skills/nature-reader
+├── nature-citation/               ← 符号链接 → academic-agent/skills/nature-citation
+├── nature-response/               ← 符号链接 → academic-agent/skills/nature-response
+├── nature-data/                   ← 符号链接 → academic-agent/skills/nature-data
+├── nature-paper2ppt/              ← 符号链接 → academic-agent/skills/nature-paper2ppt
+├── nature-academic-search/        ← 符号链接 → academic-agent/skills/nature-academic-search
+└── shared/                        ← 符号链接 → academic-agent/skills/shared
 ```
 
-## 本地定制清单
+## 文件清单
 
-以下文件位于 `academic-agent/`，不受任何 git 仓库影响：
+### 核心文件（本仓库）
 
 | 文件 | 说明 |
 |------|------|
-| `AGENT.md` | 整合 13+ skills 的独立 Agent 定义 |
+| `AGENT.md` | 整合 13 skills 的独立 Agent 定义（详细版） |
+| `SKILL.md` | Skill 定义（标准 Claude Code 格式） |
+| `README.md` | 安装与使用指南 |
+| `install.sh` | 一键安装脚本 |
 | `UPDATE_POLICY.md` | 本文件 |
 | `references/skills_chain_guide.md` | 完整论文写作 skills 链 |
 | `references/polishing_prompts_library.md` | 润色/去AI味/翻译/逻辑检查提示词库 |
 | `references/figure_generation_prompts.md` | 架构图/图表推荐/标题生成提示词库 |
 
-以下文件已内嵌到上游 skill 目录中（所属仓库不再更新，安全）：
+### 下游 Skills（已包含在 skills/ 目录中）
 
-| 文件 | 所在仓库 | 状态 |
-|------|---------|------|
-| `academic-paper/references/writing_quality_check.md` | academic-research-skills | 永不更新，安全 |
-| `academic-paper/SKILL.md` | academic-research-skills | 永不更新，已修改 |
-| `academic-pipeline/SKILL.md` | academic-research-skills | 永不更新，已修改 |
-| `deep-research/SKILL.md` | academic-research-skills | 永不更新，已修改 |
-| `academic-paper-reviewer/SKILL.md` | academic-research-skills | 永不更新，已修改 |
-
-以下文件在上游 skill 目录中，**可能被更新覆盖**：
-
-| 文件 | 所属仓库 | 风险 |
-|------|---------|------|
-| `nature-citation/SKILL.md` | nature-* repo | 低风险（仅新增了 MCP Tool Integration 小节） |
-| `nature-figure/SKILL.md` | nature-* repo | 低风险（仅新增了 Chinese font config 小节） |
+| 目录 | 说明 |
+|------|------|
+| `skills/academic-paper/` | 论文写作（12-agent pipeline） |
+| `skills/academic-paper-reviewer/` | 模拟审稿（5人独立审稿） |
+| `skills/academic-pipeline/` | 全流程编排 |
+| `skills/deep-research/` | 深度研究（7种模式） |
+| `skills/nature-academic-search/` | 多源文献检索 |
+| `skills/nature-citation/` | CNS引用管理 |
+| `skills/nature-data/` | FAIR数据声明 |
+| `skills/nature-figure/` | 出版级图表 |
+| `skills/nature-paper2ppt/` | 论文PPT |
+| `skills/nature-polishing/` | Nature风格润色 |
+| `skills/nature-reader/` | 论文精读 |
+| `skills/nature-response/` | 回复审稿 |
+| `skills/nature-writing/` | Nature风格写作 |
+| `skills/shared/` | 共享资源 |
 
 ## 更新操作指南
 
-### 更新 nature-* 系列 skill
+### 更新整个项目
 
 ```bash
-cd ~/.claude/skills/nature-writing   # 以 nature-writing 为例
+cd academic-agent
 git pull origin main
+bash install.sh  # 重新创建符号链接
 ```
 
-更新后检查事项：
-1. 确认 `academic-agent/AGENT.md` 中的路由表仍然正确
-2. 确认 `academic-agent/references/skills_chain_guide.md` 中的 skill 名称和模式未变
-3. 如有 API 变更，更新 AGENT.md 相应章节
+### 更新单个 skill
 
-### 恢复 nature-citation 或 nature-figure 的本地修改
-
-如果 `git pull` 覆盖了本地修改（概率极低），从 git reflog 恢复：
+由于 skills 已包含在仓库中，更新需要修改 `skills/` 目录下的文件：
 
 ```bash
-cd ~/.claude/skills/nature-citation
-git reflog                         # 找到 pull 前的 commit hash
-git show <hash>:SKILL.md           # 查看旧版内容
-git checkout <hash> -- SKILL.md    # 恢复文件
+cd academic-agent
+# 编辑 skills/nature-writing/SKILL.md 等文件
+git add skills/
+git commit -m "update: nature-writing skill"
 ```
 
-或在 pull 前先备份：
+### 从上游同步更新
+
+如果需要从上游仓库同步最新版本：
 
 ```bash
-cp SKILL.md SKILL.md.backup
-git pull origin main
-# 如有冲突，从 SKILL.md.backup 手动合并修改
+# 以 nature-writing 为例
+cd /tmp
+git clone https://github.com/anthropics/nature-skills.git
+cp -r nature-skills/skills/nature-writing/* ~/academic-agent/skills/nature-writing/
+cd ~/academic-agent
+git diff skills/nature-writing/
+git add skills/nature-writing/
+git commit -m "sync: nature-writing from upstream"
 ```
 
 ### 完全重建
 
-由于所有核心文件都在 `academic-agent/`（本地独立目录），即使所有上游仓库删除重建：
-1. `academic-agent/` 目录不受影响
-2. 重新 `git clone` + 符号链接上游 skills
-3. Agent 自动恢复工作
+```bash
+cd academic-agent
+git pull origin main
+bash install.sh
+```
 
 ## 设计决策
 
-1. **academic-agent/ 不归任何 git 仓库**：保证 100% 更新安全
-2. **prompt 库放在 agent 内**：独立于上游 skill 更新周期
-3. **上游 skill 仅做最小侵入修改**：nature-citation/nature-figure 仅在 SKILL.md 末尾追加内容，git merge 冲突概率极低
-4. **不再更新的仓库内修改是安全的**：academic-paper/deep-research/reviewer/pipeline 的 SKILL.md 修改永久有效
+1. **自包含仓库**：所有 skills 包含在一个仓库中，克隆即用
+2. **符号链接安装**：install.sh 创建符号链接到 ~/.claude/skills/，保持更新同步
+3. **prompt 库放在 references/ 目录**：与 skills 分离，便于维护
+4. **可选 skills 标记**：7 个可选 skills 在 AGENT.md 中用 ⚠️可选 标记
+5. **中文支持完善**：添加了中文润色、去AI味、逻辑检查等提示词库
