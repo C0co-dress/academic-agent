@@ -1,12 +1,19 @@
 ---
 name: academic-agent
 description: >-
-  Self-contained academic paper writing agent consolidating 20+ skills
+  Self-contained academic paper writing agent consolidating 50+ skills
   (academic-paper, deep-research, academic-paper-reviewer, academic-pipeline,
   nature-writing, nature-polishing, nature-figure, nature-reader, nature-citation,
   nature-response, nature-data, nature-paper2ppt, nature-academic-search,
   ml-paper-writing, systems-paper-writing, humanizer, academic-plotting,
-  presenting-conference-talks, doc-coauthoring, canvas-design)
+  presenting-conference-talks, doc-coauthoring, canvas-design,
+  harness-anything (WPS/Office/Illustrator/Photoshop COM), infographics, markdown-mermaid-writing,
+  guizang-ppt-skill, frontend-slides-editable, shap, scikit-survival,
+  pymc, networkx, aeon, torch-geometric, pymoo, geomaster, geopandas,
+  scientific-visualization, exploratory-data-analysis, timesfm-forecasting,
+  transformers, umap-learn, dask, polars, vaex, pytorch-lightning,
+  stable-baselines3, pufferlib, statistical-analysis, statsmodels,
+  scikit-learn, seaborn, matplotlib)
   plus prompt libraries for Chinese/English polishing, de-AI-ification,
   logic checking, figure/chart generation, and experiment analysis.
   Full lifecycle: literature survey → topic selection → deep reading →
@@ -15,8 +22,8 @@ description: >-
   final submission. Supports zh-CN/zh-TW/EN. Triggers on any academic
   writing or research request in Chinese or English.
 metadata:
-  version: "1.0.0"
-  last_updated: "2026-05-19"
+  version: "2.0.0"
+  last_updated: "2026-06-24"
   based_on:
     - academic-paper v3.1.1
     - deep-research v2.9.3
@@ -38,6 +45,36 @@ metadata:
     - humanizer v1.0 (from blader/humanizer)
     - doc-coauthoring (from anthropics/skills)
     - canvas-design (from anthropics/skills)
+    - harness-anything (WPS/Office/Illustrator/Photoshop COM automation)
+    - infographics (conference posters, graphical abstracts)
+    - markdown-mermaid-writing (academic diagrams, flowcharts)
+    - guizang-ppt-skill (web-based academic presentations)
+    - frontend-slides-editable (editable HTML presentations)
+    - shap (ML model interpretability)
+    - scikit-survival (survival analysis)
+    - pymc (Bayesian modeling)
+    - networkx (network/graph analysis)
+    - aeon (time series ML)
+    - torch-geometric (graph neural networks)
+    - pymoo (multi-objective optimization)
+    - geomaster (geospatial science)
+    - geopandas (geographic data analysis)
+    - scientific-visualization (publication multi-panel figures)
+    - exploratory-data-analysis (automated data exploration)
+    - timesfm-forecasting (zero-shot time series forecasting)
+    - transformers (pretrained models: NLP/CV/audio)
+    - umap-learn (dimensionality reduction)
+    - dask (distributed computing)
+    - polars (fast in-memory DataFrames)
+    - vaex (out-of-core big data)
+    - pytorch-lightning (DL training framework)
+    - stable-baselines3 (reinforcement learning)
+    - pufferlib (high-performance RL)
+    - statistical-analysis (guided statistical testing)
+    - statsmodels (statistical modeling)
+    - scikit-learn (classical ML)
+    - seaborn (statistical visualization)
+    - matplotlib (low-level plotting)
     - polishing_prompts_library
     - figure_generation_prompts
   data_access_level: verified_only
@@ -51,10 +88,11 @@ metadata:
 ## 设计原则
 
 1. **零门槛**：用户不需要知道 academic-pipeline、nature-writing 等 skill 名称，直接用自然语言描述需求
-2. **全生命周期**：从文献调研到最终投稿，一个 Agent 覆盖所有阶段
-3. **自动路由**：Agent 内部根据用户意图自动选择最优 skill + 模式组合
-4. **中英双语**：完整支持简体中文、繁体中文、英文输入和输出
-5. **渐进式深度**：简单请求简单处理，复杂任务自动启用多 agent pipeline
+2. **全生命周期**：从文献调研到最终投稿，覆盖文献管理、数据分析、建模、写作、可视化全流程
+3. **全学科覆盖**：20 个方法论 skill 覆盖统计/ML/DL/贝叶斯/生存分析/时间序列/网络/GNN/地理空间/优化等
+4. **自动路由**：Agent 内部根据用户意图自动选择最优 skill + 模式组合
+5. **中英双语**：完整支持简体中文、繁体中文、英文输入和输出
+6. **渐进式深度**：简单请求简单处理，复杂任务自动启用多 agent pipeline
 
 ---
 
@@ -78,26 +116,44 @@ metadata:
 
 | 能力域 | 可用 Skills / Prompts | 输入 → 输出 |
 |--------|----------------------|------------|
-| **文献检索** | nature-academic-search, deep-research | 关键词 → 文献池+注释 |
+| **文献检索** | nature-academic-search, deep-research, web-access | 关键词 → 文献池+注释 |
 | **论文精读** | nature-reader, deep-research review | PDF/DOI → 中英对照全文+审读 |
 | **选题引导** | deep-research socratic | 模糊想法 → 明确RQ |
 | **综述撰写** | deep-research systematic-review, academic-paper lit-review | 文献池 → 综述论文 |
 | **实验设计** | deep-research methodology | RQ → 方法蓝图 |
 | **数据分析** | statistical-analysis, statsmodels, scikit-learn, exploratory-data-analysis | 原始数据 → 统计报告 |
+| **大数据处理** | dask, polars, vaex | 超内存数据 → 清洗后DataFrame |
+| **贝叶斯建模** | pymc | 数据+先验 → 后验分布+诊断 |
+| **生存分析** | scikit-survival | 删失数据 → Cox/RFS/GB模型 |
+| **时间序列** | aeon, timesfm-forecasting | 时序数据 → 分类/预测/异常检测 |
+| **网络分析** | networkx | 关系数据 → 图算法+可视化 |
+| **图神经网络** | torch-geometric | 图数据 → GCN/GAT/GraphSAGE |
+| **地理空间** | geomaster, geopandas | 空间数据 → GIS分析+遥感 |
+| **多目标优化** | pymoo | 多目标问题 → Pareto前沿 |
+| **ML可解释性** | shap | 模型 → 特征重要性+瀑布图 |
+| **降维可视化** | umap-learn | 高维数据 → 2D/3D嵌入 |
+| **预训练模型** | transformers | 任务 → 微调NLP/CV/音频模型 |
+| **DL训练** | pytorch-lightning | PyTorch代码 → 多GPU训练+日志 |
+| **强化学习** | stable-baselines3, pufferlib | 环境 → PPO/SAC/DQN策略 |
 | **论文写作** | academic-paper full/plan, nature-writing | 研究成果 → 完整论文 |
 | **中文润色** | polishing_prompts_library §1 | 中文草稿 → 正式学术中文 |
 | **英文润色** | nature-polishing, polishing_prompts_library §2 | 英文草稿 → 顶会英文 |
-| **去AI味** | polishing_prompts_library §3/§4 | AI味文本 → 自然人类写作 |
+| **去AI味** | polishing_prompts_library §3/§4, humanizer | AI味文本 → 自然人类写作 |
 | **逻辑检查** | polishing_prompts_library §5 | 终稿 → 红线审查 |
 | **翻译** | polishing_prompts_library §7 | 中文草稿 → 英文论文 |
 | **图表生成** | nature-figure, figure_generation_prompts, matplotlib, seaborn | 数据/描述 → 出版级图表 |
-| **论文架构图** | figure_generation_prompts §1 | 方法描述 → 框架图 |
+| **多面板期刊图** | scientific-visualization | 数据 → 投稿级多面板图 |
+| **论文架构图** | figure_generation_prompts §1, markdown-mermaid-writing | 方法描述 → 框架图/流程图 |
+| **信息图表** | infographics | 研究数据 → 会议海报/图文摘要 |
 | **图表推荐** | figure_generation_prompts §2 | 实验数据 → 推荐图表类型 |
+| **概念图/设计图** | canvas-design | 设计哲学.md → PNG/PDF |
 | **引用管理** | nature-citation, academic-paper citation-check | 段落 → CNS引用+格式验证 |
+| **WPS/Office操控** | harness-anything (WPS) | 命令行 → 桌面Office文档操控 |
 | **模拟审稿** | academic-paper-reviewer | 论文 → 5人审稿+修改路线图 |
 | **回复审稿** | nature-response, academic-paper revision-coach | 审稿意见 → 逐点回复信 |
 | **数据声明** | nature-data | 论文 → FAIR数据声明 |
-| **PPT制作** | nature-paper2ppt | 论文PDF → 中文组会PPT |
+| **PPT制作** | nature-paper2ppt, guizang-ppt-skill, frontend-slides-editable | 论文PDF → 组会PPT/网页PPT |
+| **会议演讲** | presenting-conference-talks | 论文 → Beamer PDF+PPTX+演讲脚本 |
 | **格式转换** | academic-paper format-convert | 论文 → LaTeX/DOCX/PDF |
 | **AI披露** | academic-paper disclosure | — → 期刊特定AI声明 |
 | **全流程编排** | academic-pipeline | 起点材料 → 最终定稿 |
@@ -148,17 +204,36 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 | "读论文" / "翻译论文" | `nature-reader` | 需要精读+中英对照 |
 | "润色"（英文投稿） | `nature-polishing` / `polishing_prompts §2` | 中→英或英→英 |
 | "润色"（中文投稿） | `polishing_prompts §1` | 中→中 |
-| "去AI味"（英文） | `polishing_prompts §3` | AI痕迹明显的英文 |
+| "去AI味"（英文） | `polishing_prompts §3` / `humanizer` | AI痕迹明显的英文 |
 | "去AI味"（中文） | `polishing_prompts §4` | AI痕迹明显的中文 |
 | "逻辑检查" | `polishing_prompts §5` | 投稿前终稿检查 |
 | "画图" / "数据可视化" | `nature-figure` / `figure_generation_prompts` | 需要出版级图表 |
-| "架构图" / "框架图" | `figure_generation_prompts §1` | 需要方法示意图 |
+| "多面板图" / "期刊图" | `scientific-visualization` | 多面板+显著性标注+色盲友好 |
+| "架构图" / "框架图" / "流程图" | `figure_generation_prompts §1` / `markdown-mermaid-writing` | 需要方法示意图 |
+| "信息图" / "会议海报" | `infographics` | 需要专业信息图表或海报 |
 | "推荐图表" | `figure_generation_prompts §2` | 不确定用什么图表类型 |
+| "数据分析"（探索性） | `exploratory-data-analysis` | 初探数据质量+分布 |
+| "数据分析"（统计检验） | `statistical-analysis` / `statsmodels` | 需要统计推断+p值 |
+| "大数据" / "数据太大" | `dask` / `polars` / `vaex` | 内存装不下的数据 |
+| "贝叶斯" / "MCMC" | `pymc` | 需要贝叶斯推断 |
+| "生存分析" / "删失数据" | `scikit-survival` | 时间到事件数据 |
+| "时间序列" / "预测" | `aeon` / `timesfm-forecasting` | 时序分类/回归/预测 |
+| "网络分析" / "图分析" | `networkx` | 社交/生物/引用网络 |
+| "图神经网络" / "GNN" | `torch-geometric` | 节点/边/图级别预测 |
+| "地理数据" / "GIS" / "遥感" | `geomaster` / `geopandas` | 空间分析+卫星影像 |
+| "多目标优化" | `pymoo` | 多个冲突目标同时优化 |
+| "模型可解释性" / "特征重要性" | `shap` | 需要解释ML模型 |
+| "降维" / "可视化高维数据" | `umap-learn` | 高维数据→2D/3D |
+| "预训练模型" / "微调" | `transformers` | NLP/CV/音频任务 |
+| "深度学习训练" / "多GPU" | `pytorch-lightning` | 需要训练框架 |
+| "强化学习" | `stable-baselines3` / `pufferlib` | RL算法+环境 |
 | "审稿"（模拟） | `academic-paper-reviewer full` | 投稿前自查 |
 | "审稿意见"（收到真实） | `academic-paper revision-coach` → `nature-response` | 需要回复审稿人 |
 | "引用"（Nature系列） | `nature-citation` | 需要CNS引用 |
+| "WPS" / "操控Office" | `harness-anything` (WPS) | 桌面Office自动化 |
 | "数据声明" | `nature-data` | Nature投稿前 |
-| "做PPT" / "组会汇报" | `nature-paper2ppt` | 需要论文PPT |
+| "做PPT" / "组会汇报" | `nature-paper2ppt` / `guizang-ppt-skill` | 需要论文PPT |
+| "网页PPT" / "翻页PPT" | `guizang-ppt-skill` / `frontend-slides-editable` | 需要HTML演示文稿 |
 | "做Beamer/会议演讲PPT" | `presenting-conference-talks` | 需要学术演讲slides |
 | "去AI味"（系统化） | `humanizer` | Wikipedia Signs of AI writing 框架 |
 | "ML论文"（NeurIPS/ICML/ICLR） | `ml-paper-writing` | ML会议专用模板+格式 |
@@ -224,13 +299,34 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 ### 阶段 4: 图表制作
 ```
 用户: "帮我做论文的图表"
-→ 数据探索: exploratory-data-analysis
+→ 数据探索: exploratory-data-analysis (自动检测格式+质量)
 → 探索绑图: seaborn / matplotlib
-→ 正式数据图: nature-figure / scientific-visualization
+→ 正式数据图: nature-figure / scientific-visualization (多面板+显著性标注)
 → ML论文图表: academic-plotting (自动选图表类型+生成)
 → 架构图/概念图: canvas-design (设计哲学→PNG/PDF) / figure_generation_prompts §1
+→ 流程图/示意图: markdown-mermaid-writing (Mermaid文本图)
+→ 信息图表/海报: infographics (10种类型+8种风格)
 → 图表推荐: figure_generation_prompts §2
 → 标题: figure_generation_prompts §3-4
+```
+
+### 阶段 4.5: 高级数据分析（按需）
+```
+用户: "我的数据需要XX分析"
+→ 统计检验: statistical-analysis / statsmodels
+→ 贝叶斯: pymc
+→ 生存分析: scikit-survival
+→ 时间序列: aeon / timesfm-forecasting
+→ 网络分析: networkx
+→ GNN: torch-geometric
+→ 地理空间: geomaster / geopandas
+→ 多目标优化: pymoo
+→ ML可解释性: shap
+→ 降维: umap-learn
+→ 预训练+微调: transformers
+→ DL训练: pytorch-lightning
+→ RL: stable-baselines3 / pufferlib
+→ 大数据处理: dask / polars / vaex
 ```
 
 ### 阶段 5: 审稿与修改
@@ -248,8 +344,10 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 → 格式转换: academic-paper format-convert (LaTeX/DOCX/PDF)
 → 引用格式互转: academic-paper format-convert (APA/Chicago/MLA/IEEE/Vancouver)
 → AI披露: academic-paper disclosure
-→ 普通PPT: nature-paper2ppt
+→ 传统PPT: nature-paper2ppt (论文PDF→中文组会PPTX)
+→ 网页PPT: guizang-ppt-skill (横向翻页) / frontend-slides-editable (可编辑HTML)
 → 会议演讲PPT: presenting-conference-talks (Beamer PDF + 可编辑PPTX + 演讲脚本)
+→ WPS/Office操控: harness-anything (COM驱动WPS/Word/Excel改造格式)
 ```
 
 ---
@@ -308,20 +406,49 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 | 出版级数据图 | `nature-figure` | 先定声明→再出图 |
 | 多面板期刊图 | `scientific-visualization` | 显著性标注+色盲友好 |
 | 方法架构图 | `§1 论文架构图` | 框架/流程示意图 |
+| Mermaid流程图 | `markdown-mermaid-writing` | 文本驱动→24种图表类型 |
 | 概念图/设计图 | `canvas-design` | 设计哲学.md→PNG/PDF |
+| 信息图表/海报 | `infographics` | 10种类型+8种行业风格 |
 | 图表推荐 | `§2 绘图推荐` | 根据数据推荐最佳图表 |
 | 图/表标题 | `§3-4` | 中文描述→英文标题 |
 | 实验分析 | `§5 实验分析` | 数据→LaTeX分析段落 |
-| 论文PPT | `nature-paper2ppt` | PDF→中文组会PPT |
+| 论文PPT(传统) | `nature-paper2ppt` | PDF→中文组会PPTX |
+| 论文PPT(网页) | `guizang-ppt-skill` / `frontend-slides-editable` | 网页翻页/可编辑HTML |
 | 会议演讲 | `presenting-conference-talks` | 论文→Beamer PDF+PPTX+演讲脚本 |
+| WPS操控 | `harness-anything` | COM驱动Office/PDF批量处理 |
 
 > `§N` = `academic-agent/references/figure_generation_prompts.md` 对应章节
+
+### 数据分析与建模
+
+| 场景 | 工具 | 说明 |
+|------|------|------|
+| 探索性分析 | `exploratory-data-analysis` | 200+文件格式自动检测 |
+| 统计检验 | `statistical-analysis` | 引导式选检验+APA报告 |
+| 统计建模 | `statsmodels` | OLS/GLM/ARIMA/混合模型 |
+| 传统ML | `scikit-learn` | 分类/回归/聚类/管道 |
+| 贝叶斯 | `pymc` | MCMC/NUTS/变分推断 |
+| 生存分析 | `scikit-survival` | Cox/RFS/GB/竞争风险 |
+| 时间序列ML | `aeon` | 分类/回归/聚类/预测 |
+| 零样本预测 | `timesfm-forecasting` | 无需训练→点预测+区间 |
+| 网络分析 | `networkx` | 图算法/社区检测/可视化 |
+| 图神经网络 | `torch-geometric` | GCN/GAT/GraphSAGE/GIN |
+| 地理空间 | `geomaster` / `geopandas` | GIS+遥感+卫星影像 |
+| 多目标优化 | `pymoo` | NSGA-II/Pareto前沿 |
+| ML可解释性 | `shap` | SHAP值/瀑布图/蜂群图 |
+| 降维可视化 | `umap-learn` | 高维→2D/3D嵌入 |
+| 预训练模型 | `transformers` | NLP/CV/音频微调 |
+| DL训练 | `pytorch-lightning` | 多GPU/TPU/日志 |
+| 强化学习 | `stable-baselines3` / `pufferlib` | PPO/SAC/DQN |
+| 大数据 | `dask` / `polars` / `vaex` | 分布式/内存外计算 |
+| 时序预测 | `timesfm-forecasting` | Google TimesFM零样本 |
 
 ### 研究与审稿
 
 | 场景 | 工具 | 说明 |
 |------|------|------|
 | 多源文献检索 | `nature-academic-search` | PubMed+CrossRef+arXiv |
+| 网络检索补充 | `web-access` | 网页搜索+社交媒体+知网 |
 | 深度研究 | `deep-research` | 7种模式可选 |
 | 论文精读 | `nature-reader` | PDF→中英对照全文 |
 | 模拟审稿 | `academic-paper-reviewer` | 5人独立审稿 |
@@ -360,9 +487,9 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 
 | 项目 | 内容 |
 |------|------|
-| Agent 版本 | 1.0.0 |
-| 创建日期 | 2026-05-19 |
-| 整合 Skills | 13 个核心 skills + 2 个提示词库 |
+| Agent 版本 | 2.0.0 |
+| 更新日期 | 2026-06-24 |
+| 整合 Skills | 50+ skills（20 核心学术 + 30 方法论/工具 + 2 提示词库） |
 | 支持语言 | zh-CN / zh-TW / EN |
 | 适用范围 | 全学科、全期刊/会议级别 |
 
@@ -374,10 +501,24 @@ ML论文, 系统论文, 架构图, 概念图, 协作写文档, 拟人化
 
 | 文件 | 内容 |
 |------|------|
-| `references/skills_chain_guide.md` | 完整 skills 链（Stage 0-9） |
+| `references/skills_chain_guide.md` | 完整 skills 链（Stage 0-11） |
 | `references/polishing_prompts_library.md` | 润色/去AI味/翻译/逻辑检查提示词库 |
 | `references/figure_generation_prompts.md` | 架构图/图表推荐/标题生成提示词库 |
 | `UPDATE_POLICY.md` | 更新安全策略与操作指南 |
+
+子 skill 索引（`skills/` 目录，共 50 个）：
+
+| 分类 | Skills |
+|------|--------|
+| 学术核心 (20) | academic-paper, academic-paper-reviewer, academic-pipeline, academic-plotting, deep-research, nature-* (×9), ml-paper-writing, systems-paper-writing, presenting-conference-talks |
+| 文档办公 (6) | docx, pptx, xlsx, pdf, doc-coauthoring, harness-anything |
+| 图表可视化 (8) | matplotlib, seaborn, scientific-visualization, nature-figure, canvas-design, infographics, markdown-mermaid-writing, guizang-ppt-skill, frontend-slides-editable |
+| 数据分析 (7) | scikit-learn, statistical-analysis, statsmodels, exploratory-data-analysis, pymc, scikit-survival, shap |
+| 大数据 (3) | dask, polars, vaex |
+| ML/DL (8) | pytorch-lightning, transformers, torch-geometric, stable-baselines3, pufferlib, aeon, timesfm-forecasting, umap-learn |
+| 网络地理 (3) | networkx, geomaster, geopandas |
+| 优化 (1) | pymoo |
+| 辅助 (3) | humanizer, web-access, skill-creator |
 
 上游 skill 文件（引用路径不变）：
 | 文件 | 内容 |
